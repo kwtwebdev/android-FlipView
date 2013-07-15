@@ -69,50 +69,25 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder holder;
 		
 		if(convertView == null){
-			holder = new ViewHolder();
-			convertView = inflater.inflate(R.layout.page, parent, false);
-			
-			holder.text = (TextView) convertView.findViewById(R.id.text);
-			holder.firstPage = (Button) convertView.findViewById(R.id.first_page);
-			holder.lastPage = (Button) convertView.findViewById(R.id.last_page);
-			
-			holder.firstPage.setOnClickListener(this);
-			holder.lastPage.setOnClickListener(this);
-			
-			convertView.setTag(holder);
+
+			if (position % 2 == 0) {
+				convertView = inflater.inflate(R.layout.page0, parent, false);
+			} else {
+				convertView = inflater.inflate(R.layout.page1, parent, false);
+			}
+
 		}else{
-			holder = (ViewHolder) convertView.getTag();
+
 		}
-		
-		//TODO set a text with the id as well
-		holder.text.setText(items.get(position).getId()+":"+position);
+
 		
 		return convertView;
 	}
 
-	static class ViewHolder{
-		TextView text;
-		Button firstPage;
-		Button lastPage;
-	}
-
 	@Override
 	public void onClick(View v) {
-		switch(v.getId()){
-		case R.id.first_page:
-			if(callback != null){
-				callback.onPageRequested(0);
-			}
-			break;
-		case R.id.last_page:
-			if(callback != null){
-				callback.onPageRequested(getCount()-1);
-			}
-			break;
-		}
 	}
 
 	public void addItems(int amount) {
