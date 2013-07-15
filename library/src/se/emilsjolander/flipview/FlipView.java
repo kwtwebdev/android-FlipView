@@ -123,6 +123,7 @@ public class FlipView extends FrameLayout {
 	private OnOverFlipListener mOnOverFlipListener;
 
 	private float mFlipDistance = 0;
+	private float mFlipDistanceDuringMotionDown = 0;
 	private int mCurrentPage = INVALID_PAGE_POSITION;
 	private long mCurrentPageId = 0;
 
@@ -450,6 +451,7 @@ public class FlipView extends FrameLayout {
 			mLastX = ev.getX();
 			mLastY = ev.getY();
 			mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+			mFlipDistanceDuringMotionDown = mFlipDistance;
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (!mIsFlipping) {
@@ -496,6 +498,20 @@ public class FlipView extends FrameLayout {
 						: getWidth()) / FLIP_DISTANCE_PER_PAGE);
 				mFlipDistance += deltaFlipDistance;
 
+				// This code block is used for, if you swipe from page N to page
+				// N+1, continue swiping will not trigger page N+2.
+				if (mFlipDistance - mFlipDistanceDuringMotionDown >= FLIP_DISTANCE_PER_PAGE) {
+					if (deltaFlipDistance > 0) {
+						// Undo.
+						mFlipDistance -= deltaFlipDistance;
+					}
+				} else if (mFlipDistance - mFlipDistanceDuringMotionDown <= -FLIP_DISTANCE_PER_PAGE) {
+					if (deltaFlipDistance < 0) {
+						// Undo.
+						mFlipDistance -= deltaFlipDistance;
+					}                    
+				}
+				
 				final int minFlipDistance = 0;
 				final int maxFlipDistance = (mPageCount - 1)
 						* FLIP_DISTANCE_PER_PAGE;
