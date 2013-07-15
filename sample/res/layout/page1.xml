@@ -7,6 +7,7 @@
 <TextView
     android:id="@+id/address1"
     android:gravity="left"
+    android:background="#ffffffff"
     android:layout_height="fill_parent"
     android:layout_width="wrap_content"
 
